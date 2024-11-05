@@ -11,3 +11,11 @@ func CreateOrder(order models.Order) (models.Order, error) {
 	}
 	return order, nil
 }
+
+func GetOrder(orderId uint) (models.Order, error) {
+	var order models.Order
+	if err := utils.DB.First(&order, orderId).Error; err != nil {
+		return order, err
+	}
+	return order, nil
+}

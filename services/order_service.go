@@ -35,7 +35,7 @@ func CreateOrder(orderRequest request.OrderRequest) (response.OrderResponse, err
 
 	return response.OrderResponse{
 		OrderID:      order.ID,
-		Username:     orderRequest.Username,
+		UserId:       order.UserID,
 		RestaurantID: order.RestaurantID,
 		MenuItemIDs:  order.MenuItemIDs,
 	}, nil
@@ -101,4 +101,18 @@ func validateRestaurant(restaurantID uint, menuItemIDs []int64) error {
 	}
 
 	return nil
+}
+
+func GetOrder(orderId uint) (response.OrderResponse, error) {
+	order, err := repositories.GetOrder(orderId)
+	if err != nil {
+		return response.OrderResponse{}, err
+	}
+
+	return response.OrderResponse{
+		OrderID:      order.ID,
+		UserId:       order.UserID,
+		RestaurantID: order.RestaurantID,
+		MenuItemIDs:  order.MenuItemIDs,
+	}, nil
 }

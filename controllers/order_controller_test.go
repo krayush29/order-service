@@ -33,3 +33,18 @@ func TestCreateOrder_BadRequest(t *testing.T) {
 
 	assert.Equal(t, http.StatusBadRequest, rr.Code)
 }
+
+func TestGetOrderInvalidOrderID(t *testing.T) {
+	req, err := http.NewRequest("GET", "/orders/invalid", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(GetOrder)
+
+	handler.ServeHTTP(rr, req)
+
+	assert.Equal(t, http.StatusBadRequest, rr.Code)
+	assert.Contains(t, rr.Body.String(), "Invalid order ID")
+}
