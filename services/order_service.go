@@ -26,6 +26,7 @@ func CreateOrder(orderRequest request.OrderRequest) (response.OrderResponse, err
 		RestaurantID: orderRequest.RestaurantID,
 		UserID:       user.ID,
 		MenuItemIDs:  orderRequest.MenuItemIDs,
+		Status:       "PENDING", // Default status
 	}
 
 	order, err = repositories.CreateOrder(order)
@@ -38,6 +39,7 @@ func CreateOrder(orderRequest request.OrderRequest) (response.OrderResponse, err
 		UserId:       order.UserID,
 		RestaurantID: order.RestaurantID,
 		MenuItemIDs:  order.MenuItemIDs,
+		Status:       order.Status,
 	}, nil
 }
 
@@ -114,5 +116,21 @@ func GetOrder(orderId uint) (response.OrderResponse, error) {
 		UserId:       order.UserID,
 		RestaurantID: order.RestaurantID,
 		MenuItemIDs:  order.MenuItemIDs,
+		Status:       order.Status,
+	}, nil
+}
+
+func UpdateOrder(orderId uint, status string) (response.OrderResponse, error) {
+	order, err := repositories.UpdateOrder(orderId, status)
+	if err != nil {
+		return response.OrderResponse{}, err
+	}
+
+	return response.OrderResponse{
+		OrderID:      order.ID,
+		UserId:       order.UserID,
+		RestaurantID: order.RestaurantID,
+		MenuItemIDs:  order.MenuItemIDs,
+		Status:       order.Status,
 	}, nil
 }

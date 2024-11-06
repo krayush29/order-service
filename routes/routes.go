@@ -11,5 +11,6 @@ func InitRoutes() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/orders/{orderId}", controllers.GetOrder).Methods("GET")
+	r.HandleFunc("/orders/{orderId}", controllers.UpdateOrder).Methods("PUT")
 	http.Handle("/", r)
 }

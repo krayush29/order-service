@@ -19,3 +19,17 @@ func GetOrder(orderId uint) (models.Order, error) {
 	}
 	return order, nil
 }
+
+func UpdateOrder(orderId uint, status string) (models.Order, error) {
+	var order models.Order
+	if err := utils.DB.First(&order, orderId).Error; err != nil {
+		return order, err
+	}
+
+	order.Status = status
+	if err := utils.DB.Save(&order).Error; err != nil {
+		return order, err
+	}
+
+	return order, nil
+}
