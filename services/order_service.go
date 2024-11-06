@@ -134,3 +134,23 @@ func UpdateOrder(orderId uint, status string) (response.OrderResponse, error) {
 		Status:       order.Status,
 	}, nil
 }
+
+func GetOrders(userIds []uint, statuses []string) ([]response.OrderResponse, error) {
+	orders, err := repositories.GetOrders(userIds, statuses)
+	if err != nil {
+		return nil, err
+	}
+
+	var orderResponses []response.OrderResponse
+	for _, order := range orders {
+		orderResponses = append(orderResponses, response.OrderResponse{
+			OrderID:      order.ID,
+			UserId:       order.UserID,
+			RestaurantID: order.RestaurantID,
+			MenuItemIDs:  order.MenuItemIDs,
+			Status:       order.Status,
+		})
+	}
+
+	return orderResponses, nil
+}

@@ -7,6 +7,7 @@ import (
 	"order-service/dto/request"
 	"order-service/services"
 	"strconv"
+	"strings"
 )
 
 func CreateOrder(w http.ResponseWriter, r *http.Request) {
@@ -42,6 +43,44 @@ func GetOrder(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(orderResponse)
+}
+
+func GetOrders(w http.ResponseWriter, r *http.Request) {
+	userIdStr := r.URL.Query().Get("user_id")
+	statusStr := r.URL.Query().Get("status")
+
+	var userIds []uint
+	if userIdStr != "" {
+		userIdParts := strings.Split(userIdStr, ",")
+		for _, idStr := range userIdParts {
+			id, err := strconv.Atoi(idStr)
+			if err != nil {
+				http.Error(w, "Invalid user ID", http.StatusBadRequest)
+				return
+			}
+			userIds = append(userIds, uint(id))
+		}
+	}
+
+	var statuses []string
+	if statusStr != "" {
+		statuses = strings.Split(statusStr, ",")
+		for _, status := range statuses {
+			if status != "DONE" && status != "PENDING" {
+				http.Error(w, "Invalid status, Please enter valid status. Status can be DONE or PENDING", http.StatusBadRequest)
+				return
+			}
+		}
+	}
+
+	orderResponses, err := services.GetOrders(userIds, statuses)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(orderResponses)
 }
 
 func UpdateOrder(w http.ResponseWriter, r *http.Request) {

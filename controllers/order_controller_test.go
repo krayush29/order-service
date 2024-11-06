@@ -118,3 +118,31 @@ func TestUpdateOrderInvalidOrderID(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, rr.Code)
 	assert.Contains(t, rr.Body.String(), "Invalid order ID")
 }
+
+func TestGetOrders_InvalidStatus(t *testing.T) {
+	req, err := http.NewRequest("GET", "/orders?status=INVALID", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(GetOrders)
+	handler.ServeHTTP(rr, req)
+
+	assert.Equal(t, http.StatusBadRequest, rr.Code)
+	assert.Contains(t, rr.Body.String(), "Invalid status")
+}
+
+func TestGetOrders_InvalidUserID(t *testing.T) {
+	req, err := http.NewRequest("GET", "/orders?user_id=invalid", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(GetOrders)
+	handler.ServeHTTP(rr, req)
+
+	assert.Equal(t, http.StatusBadRequest, rr.Code)
+	assert.Contains(t, rr.Body.String(), "Invalid user ID")
+}
